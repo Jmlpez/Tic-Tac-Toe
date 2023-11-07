@@ -1,3 +1,5 @@
+import os
+
 SIZE = 3
 INF = 1000
 USER_PLAYER = 'X'  # maximize
@@ -36,10 +38,6 @@ def player_win(player='', table=[]):
 
 
 def draw(table):
-    # for row in range(SIZE):
-    #     for col in range(SIZE):
-    #         if table[row][col] == '-':
-    #             return False
     result = [table[r][c]
               for r in range(SIZE) for c in range(SIZE) if table[r][c] == '-']
 
@@ -95,18 +93,35 @@ def get_best_move(table):
     return move
 
 
+def user_move(table):
+    posr, posc = map(int, input().split(" "))
+    table[posr][posc] = USER_PLAYER
+
+
+def IA_move(table):
+    move = get_best_move(table)
+    table[move[0]][move[1]] = IA_PLAYER
+
+
 def run():
     initial_table = [['-', '-', '-'],
                      ['-', '-', '-'],
                      ['-', '-', '-']]
     # print(initial_table)
     while True:
+        os.system("clear")
         print_table(initial_table)
-        # inp = "1 1"
-        posr, posc = map(int, input().split(" "))
-        initial_table[posr][posc] = 'X'
-        move = get_best_move(initial_table)
-        initial_table[move[0]][move[1]] = 'O'
+
+        user_move(initial_table)
+        if (draw(initial_table)):
+            print("DRAW!. That's IMPOSSIBLE XD")
+            break
+
+        IA_move(initial_table)
+        if (player_win(IA_PLAYER, initial_table)):
+            print_table(initial_table)
+            print("IA WIN!. OF COURSE BABY")
+            break
 
 
 if __name__ == '__main__':
